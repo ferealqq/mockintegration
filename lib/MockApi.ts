@@ -22,9 +22,9 @@ export default class MockApi {
         response: `
             #if ($input.params('timestamp') == "2021-01-01 00:00:00")
                 ${JSON.stringify(mockJson)}
-            #else if ($input.params('timestamp') == "2021-01-02 00:00:00")
+            #elseif ($input.params('timestamp') == "2021-01-02 00:00:00")
                 ${JSON.stringify(largeJson)}
-            #else if ($input.params('timestamp') == "2021-01-03 00:00:00")
+            #else 
                 {
                     "failed_order": true
                 }
@@ -35,7 +35,7 @@ export default class MockApi {
     public mockGetResponse = MockApi.createMockResponse(
         "200",
         {
-            "method.request.querystring.name": true
+            "method.request.querystring.timestamp": true
         }
     );
 
@@ -104,8 +104,7 @@ export default class MockApi {
         return new Apigateway.MockIntegration({
             passthroughBehavior: Apigateway.PassthroughBehavior.NEVER,
             requestParameters: {
-                // "integration.request.path.id" : "method.request.path.id",
-                "integration.request.querystring.name" : "method.request.querystring.name"
+                "integration.request.querystring.timestamp" : "method.request.querystring.timestamp"
             },
             requestTemplates: {
               [MockApi.APPLICATION_JSON]: `{
