@@ -20,15 +20,24 @@ export default class MockApi {
 
     public mockGet = MockApi.createGetMockResponse({
         response: `
-            #if ($input.params('id') == "0")
-                ${JSON.stringify(largeJson)}
-            #else
+            #if ($input.params('timestamp') == "2021-01-01 00:00:00")
                 ${JSON.stringify(mockJson)}
+            #else if ($input.params('timestamp') == "2021-01-02 00:00:00")
+                ${JSON.stringify(largeJson)}
+            #else if ($input.params('timestamp') == "2021-01-03 00:00:00")
+                {
+                    "failed_order": true
+                }
             #end
         `
     });
 
-    public mockGetResponse = MockApi.createMockResponse("200");
+    public mockGetResponse = MockApi.createMockResponse(
+        "200",
+        {
+            "method.request.querystring.name": true
+        }
+    );
 
     // public mockGetAll = MockApi.createGetMockResponse({response: JSON.stringify(mockJson)});
 
@@ -37,9 +46,9 @@ export default class MockApi {
             defaultCorsPreflightOptions:{
               allowOrigins: Apigateway.Cors.ALL_ORIGINS,
               allowMethods: Apigateway.Cors.ALL_METHODS
-            }
+            },
         });
-      
+        
         mockApi.root.addMethod(
             "POST",
             this.mockPost,
@@ -94,9 +103,10 @@ export default class MockApi {
         ) : MockIntegration{
         return new Apigateway.MockIntegration({
             passthroughBehavior: Apigateway.PassthroughBehavior.NEVER,
-            // requestParameters: {
-            //     "integration.request.querystring.stage" : "method.request.querystring.version",
-            // },
+            requestParameters: {
+                // "integration.request.path.id" : "method.request.path.id",
+                "integration.request.querystring.name" : "method.request.querystring.name"
+            },
             requestTemplates: {
               [MockApi.APPLICATION_JSON]: `{
                 "statusCode": ${statusCode}
@@ -116,7 +126,7 @@ export default class MockApi {
     
     }
 
-    public static createMockResponse(statusCode: string = "200"){
+    public static createMockResponse(statusCode: string = "200",requestParameters: any = null){
         return {
             methodResponses: [
               {
@@ -127,7 +137,8 @@ export default class MockApi {
                   "method.response.header.Access-Control-Allow-Headers": true
                 }
               }
-            ]
+            ],
+            requestParameters: requestParameters
         };
     }
 }
