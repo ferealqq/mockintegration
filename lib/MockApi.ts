@@ -7,7 +7,7 @@ import { MockIntegration } from "@aws-cdk/aws-apigateway";
 export default class MockApi {
     static APPLICATION_JSON = "application/json";
 
-    public mockPost = MockApi.createPostMockResponse({
+    public static mockPost = MockApi.createPostMockResponse({
         statusCode: 201, 
         response: `{
             "id": $context.requestId,
@@ -16,9 +16,9 @@ export default class MockApi {
           }`
     })
 
-    public mockPostResponse = MockApi.createMockResponse("201");
+    public static mockPostResponse = MockApi.createMockResponse("201");
 
-    public mockGet = MockApi.createGetMockResponse({
+    public static mockGet = MockApi.createGetMockResponse({
         response: `
             #if ($input.params('timestamp') == "2021-01-01 00:00:00")
                 ${JSON.stringify(mockJson)}
@@ -32,7 +32,7 @@ export default class MockApi {
         `
     });
 
-    public mockGetResponse = MockApi.createMockResponse(
+    public static mockGetResponse = MockApi.createMockResponse(
         "200",
         {
             "method.request.querystring.timestamp": true
@@ -41,7 +41,7 @@ export default class MockApi {
 
     // public mockGetAll = MockApi.createGetMockResponse({response: JSON.stringify(mockJson)});
 
-    constructor(stack: MockintegrationStack){
+    public static create(stack: MockintegrationStack){
         const mockApi = new Apigateway.RestApi(stack,"mockRestApi", {
             defaultCorsPreflightOptions:{
               allowOrigins: Apigateway.Cors.ALL_ORIGINS,
@@ -51,14 +51,14 @@ export default class MockApi {
         
         mockApi.root.addMethod(
             "POST",
-            this.mockPost,
-            this.mockPostResponse
+            MockApi.mockPost,
+            MockApi.mockPostResponse
         );
         
         mockApi.root.addMethod(
             "GET",
-            this.mockGet,
-            this.mockGetResponse
+            MockApi.mockGet,
+            MockApi.mockGetResponse
         )
     }
 
