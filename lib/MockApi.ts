@@ -1,66 +1,8 @@
 import * as Apigateway from '@aws-cdk/aws-apigateway';
-import { MockintegrationStack } from "./mockintegration-stack";
-import mockJson from './mock.json';
-import largeJson from './mock-2.json';
 import { MockIntegration } from "@aws-cdk/aws-apigateway";
 
 export default class MockApi {
     static APPLICATION_JSON = "application/json";
-
-    public static mockPost = MockApi.createPostMockResponse({
-        statusCode: 201, 
-        response: `{
-            "id": $context.requestId,
-            "createdAt": $context.requestTimeEpoch,
-            "updatedAt": $context.requestTimeEpoch
-          }`
-    })
-
-    public static mockPostResponse = MockApi.createMockResponse("201");
-
-    public static mockGet = MockApi.createGetMockResponse({
-        response: `
-            #if ($input.params('timestamp') == "2021-01-01 00:00:00")
-                ${JSON.stringify(mockJson)}
-            #elseif ($input.params('timestamp') == "2021-01-02 00:00:00")
-                ${JSON.stringify(largeJson)}
-            #else 
-                {
-                    "failed_order": true
-                }
-            #end
-        `
-    });
-
-    public static mockGetResponse = MockApi.createMockResponse(
-        "200",
-        {
-            "method.request.querystring.timestamp": true
-        }
-    );
-
-    // public mockGetAll = MockApi.createGetMockResponse({response: JSON.stringify(mockJson)});
-
-    public static create(stack: MockintegrationStack){
-        const mockApi = new Apigateway.RestApi(stack,"mockRestApi", {
-            defaultCorsPreflightOptions:{
-              allowOrigins: Apigateway.Cors.ALL_ORIGINS,
-              allowMethods: Apigateway.Cors.ALL_METHODS
-            },
-        });
-        
-        mockApi.root.addMethod(
-            "POST",
-            MockApi.mockPost,
-            MockApi.mockPostResponse
-        );
-        
-        mockApi.root.addMethod(
-            "GET",
-            MockApi.mockGet,
-            MockApi.mockGetResponse
-        )
-    }
 
     public static defaultResponseParameters = {
         "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
@@ -99,13 +41,11 @@ export default class MockApi {
     }
 
     public static createGetMockResponse(
-            {statusCode = 200, response = `{}`,responseParameters = MockApi.defaultResponseParameters}
+            {statusCode = 200, response = `{}`,responseParameters = MockApi.defaultResponseParameters, requestParameters = {}}
         ) : MockIntegration{
         return new Apigateway.MockIntegration({
             passthroughBehavior: Apigateway.PassthroughBehavior.NEVER,
-            requestParameters: {
-                "integration.request.querystring.timestamp" : "method.request.querystring.timestamp"
-            },
+            requestParameters,
             requestTemplates: {
               [MockApi.APPLICATION_JSON]: `{
                 "statusCode": ${statusCode}
