@@ -6,8 +6,9 @@ export default class MockApi {
 
     public static defaultResponseParameters = {
         "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
-        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-        "method.response.header.Access-Control-Allow-Origin": "'*'"
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,woocommerce-custom-header'",
+        // "method.response.header.Jotain": "'OKEI'",
+        // "method.response.header.Access-Control-Allow-Origin": "'*'"
     };
 
     /**
