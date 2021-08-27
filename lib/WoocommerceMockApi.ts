@@ -42,13 +42,7 @@ export default class WoocommerceApi {
         }
     );
 
-    public static create(stack: MockintegrationStack){
-        const mockApi = new Apigateway.RestApi(stack,"mockRestApi", {
-            defaultCorsPreflightOptions:{
-              allowOrigins: Apigateway.Cors.ALL_ORIGINS,
-              allowMethods: Apigateway.Cors.ALL_METHODS
-            },
-        });
+    public static create(mockApi: Apigateway.RestApi,stack: MockintegrationStack){
         const api = mockApi.root
                     .addResource("wp-json")
                     .addResource("wc-flashnode");
