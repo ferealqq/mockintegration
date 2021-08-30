@@ -64,9 +64,6 @@ export default class WoocommerceApi {
         const headerTest = api.addResource("headertest")
 
         WoocommerceApi.addHeaderTest(headerTest)
-
-        WoocommerceApi.addResponseHeaderTest(headerTest);
-
     }
 
     public static addHeaderTest(headerTest : Apigateway.Resource) {
@@ -97,65 +94,5 @@ export default class WoocommerceApi {
                 }
             )
         )
-    }
-
-    public static addResponseHeaderTest(headerTest : Apigateway.Resource){
-        const mockGetResponderHeaders = new Apigateway.MockIntegration({
-            passthroughBehavior: Apigateway.PassthroughBehavior.NEVER,
-            requestTemplates: {
-              [MockApi.APPLICATION_JSON]: `{
-                "statusCode": 200,
-              }`,
-            },
-            integrationResponses: [
-              {
-                statusCode: "200",
-                responseTemplates: {
-                    [MockApi.APPLICATION_JSON]: `{
-                        "moikka": "hello",
-                        "header": {
-                            "value": "letsgo"
-                        },
-                        "headers": {
-                            "value": "moneytalks"
-                        }
-                        #set($context.requestOverride.header.woocommerce-custom-header = "okeitoimiiks?")
-                        #set($context.requestOverride.header.value = "okeitoimiiks?")
-                    }`,
-                },
-                responseParameters:{
-                    ...MockApi.defaultResponseParameters,
-                    "method.response.header.woocommerce-custom-header": "integration.response.header.woocommerce-custom-header",
-                    "method.response.header.joku": "integration.response.header.woocommerce-custom-header",
-                }
-              }
-            ],
-           }
-        );
-
-        headerTest
-            .addResource("reponseheader")
-            .addMethod(
-                "GET",
-                mockGetResponderHeaders,
-                {
-                    methodResponses: [
-                      {
-                        "statusCode": "200",
-                        responseParameters: {
-                            "method.response.header.Access-Control-Allow-Origin": true,
-                            "method.response.header.Access-Control-Allow-Methods": true,
-                            "method.response.header.Access-Control-Allow-Headers": true,
-                            "method.response.header.woocommerce-custom-header": true,
-                            "method.response.header.joku": true
-                        }
-                      }
-                    ],
-                    requestParameters: {
-                        "method.request.header.woocommerce-custom-header": true,
-                    }
-                }
-            )
-
     }
 }
