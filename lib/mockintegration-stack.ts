@@ -3,7 +3,7 @@ import * as Apigateway from '@aws-cdk/aws-apigateway';
 import MockApi from './MockApi';
 import WoocommerceApi from './WoocommerceMockApi';
 import MockLambdaApi from './MockLambdaApi'
-
+import NetvisorApi from './NetvisorApi';
 
 export class MockintegrationStack extends cdk.Stack {
 
@@ -20,5 +20,7 @@ export class MockintegrationStack extends cdk.Stack {
     WoocommerceApi.create(mockApi,this);
 
     MockLambdaApi.create(mockApi,this,{});    
+
+    NetvisorApi.create(mockApi,this);
   }
 }

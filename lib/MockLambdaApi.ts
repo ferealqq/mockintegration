@@ -1,4 +1,4 @@
-import { LambdaIntegration, RestApi } from '@aws-cdk/aws-apigateway';
+import { LambdaIntegration, ProxyResource, RestApi } from '@aws-cdk/aws-apigateway';
 import { Code, Function, Runtime } from '@aws-cdk/aws-lambda';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { Stack } from '@aws-cdk/core';
@@ -19,12 +19,20 @@ export default class MockLambdaApi{
 
         bucket.grantReadWrite(handler);
 
-        const apiResource = mockApi.root.addResource("mock-lambda");
+        const apiResource = mockApi.root
+            .addResource(
+                "mock-lambda",
+                // new ProxyResource(stack,)
+            );
+
         apiResource.addMethod(
-            "GET",
-            new LambdaIntegration(handler as any,{
-                requestTemplates: { [MockApi.APPLICATION_JSON]: `{"statusCode": "200"}` }
-            })
+            "ANY",
+            new LambdaIntegration(handler as any,
+                {
+                    requestTemplates: { [MockApi.APPLICATION_JSON]: `{"statusCode": "200"}` },
+                    proxy: true 
+                }
+            )
         );
     }   
 }
