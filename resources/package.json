@@ -9,8 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@vendia/serverless-express": "^4.3.11",
     "express": "^4.17.1",
-    "serverless-http": "^2.7.0"
+    "serverless-http": "^2.7.0",
+    "@vendia/serverless-express": "^4.3.0",
+    "body-parser": "^1.17.1",
+    "compression": "^1.6.2",
+    "cors": "^2.8.3"
   }
 }
