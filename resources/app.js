@@ -2,14 +2,15 @@
 const serverlessExpress = require("@vendia/serverless-express");
 // const server = require("./server.js");
 const express = require("express");
+const bodyParser = require('body-parser')
 
 const app = express();
 
-app.use(express.json());
+app.use(bodyParser.json());
 // ilman tätä tulee route not found
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "*");
     res.header("Access-Control-Allow-Methods", "OPTIONS,POST,GET");
