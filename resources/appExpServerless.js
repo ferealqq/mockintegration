@@ -10,6 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(function (req, res, next) {
+    console.log("header configurations");
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "*");
     res.header("Access-Control-Allow-Methods", "OPTIONS,POST,GET");
@@ -17,7 +18,8 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.get("/",(req,res)=>{
+app.get("*",(req,res)=>{
+    console.log("handling request / ");
     const { event } = serverlessExpress.getCurrentInvoke();
     if(event.Records[0].cf.response.headers['transfer-encoding']){
         res.setHeader(
@@ -25,9 +27,12 @@ app.get("/",(req,res)=>{
             event.Records[0].cf.response.headers['transfer-encoding'][0].value,
         );
     }
-    res.send({
+    console.log("trying to return");
+    res.status(200).send({
         name: "Moikka Pekka!"
     })
 });
 
-exports.main = serverlessExpress({app}).handler;
+console.log("so this is only returning something but fails in the node modules");
+
+exports.main = serverlessExpress({app});
